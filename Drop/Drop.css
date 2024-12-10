@@ -1,0 +1,22 @@
+
+p{
+	border-bottom: 1px solid blue;
+}
+
+table{
+	border: 1px solid red;
+}
+
+th{
+	font-weight: bold;
+}
+
+td, th{
+	border: 1px solid red;
+	padding: 5px;
+}
+
+.divClass {
+	border: 1px solid red;
+	height: 150px;
+}

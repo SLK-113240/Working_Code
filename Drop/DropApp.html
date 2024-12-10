@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- Copyright 2014 , Dassault Systemes. All rights reserved. -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+<head>
+
+<!-- Widget Meta Data -->
+<meta name="author" content="Dassault Systemes" />
+<meta name="brand" content="ENOVIA" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="autoRefresh" content="0" />
+<meta name="debugMode" content="true" />
+<meta name="description" content="DROP  Event" />
+
+<!-- Application Standalone emulation files -->
+<link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+<link rel="stylesheet" type="text/css" href="Drop.css" />
+<script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+
+<!-- Other Scripts -->
+<script type="text/javascript" src="../../common/scripts/jquery-1.9.1.js"></script>
+
+<!-- Widget Title -->
+<title>Drop Test</title>
+
+
+<!-- Widget Events -->
+<script>
+
+  
+//Advanced
+require(["DS/DataDragAndDrop/DataDragAndDrop","UWA/Drivers/jQuery","DS/WAFData/WAFData","DS/i3DXCompassServices/i3DXCompassServices"] , 
+function (DataDragAndDrop,$,WAFData,i3DXCompassServices) {
+    'use strict';
+
+    var myWidget = {
+    	arrDisplayData: [],
+    		
+   		callData: function(draggedObj){			
+   			
+	  											// Another webservice for creating the physical product
+									var url = "/resources/v1/modeler/dslc/changeaction/"+draggedObj+"?$fields=members, proposedChanges, realizedChanges, referentials, contexts, flowDown, customerAttributes";
+									
+									//alert("url in call data >>>>>>>>>>>>>>>>>>>>>"+url);
+									i3DXCompassServices.getServiceUrl({
+										serviceName: '3DSpace',
+										platformId : widget.getValue("x3dPlatformId"),
+	   			
+										onComplete: function (data) {
+											//alert("data>>"+data);
+											var the3DSpaceUrlService ;
+											if ( typeof data === "string" ) {
+												the3DSpaceUrlService = data;
+												var urlWAF = the3DSpaceUrlService+url;
+												//alert("urlWAF>>>>>>>>>>>>>>>>>>>"+urlWAF);
+												var methodWAF="GET";
+												var dataWAF={
+												
+												
+												};
+												WAFData.authenticatedRequest(urlWAF, {
+													method: methodWAF, 
+													data: dataWAF,
+													type: 'json',
+													headers: {
+														
+														Accept: "application/json",														
+														"Content-Type": "application/json",
+														SecurityContext: encodeURIComponent("VPLMProjectLeader.Micro Motion.GLOBAL")			
+																										
+														
+													},
+													onComplete: function (dataResp){
+														alert("Success dataResp DONE ");
+														console.log(JSON.stringify(dataResp));
+														alert(" CA Details>>>>>>>>>>>>>>"+JSON.stringify(dataResp));
+													},
+												
+													onFailure: function(error){
+														alert("Fail"+JSON.stringify(error));
+														widget.body.innerHTML += "<p>Call Faillure</p>";
+														widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+													}
+											
+												});
+						
+											}
+										},
+										onFailure: function(error){
+											widget.body.innerHTML += "<p>Call Faillure</p>";
+											widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+										}
+									});
+   		},
+
+        onLoad: function() {
+        	
+            var tableHTML = "<div><table><tr>" +
+            "<td><textarea class='myInputType' rows='10' cols='40'></textarea></td>" + 
+            "</tr></table></div>" + 
+            "<div id='dataDiv' style='display:none;'>Object Details:<br/><br/><table id='myTab'><thead><tr><th>Type</th><th>Name</th><th>Revision</th></tr></thead><tbody>" +
+            "<tr><td id='typeId'></td><td id='nameId'></td><td id='revId'></td></tr>" +
+            "</tbody></table></div>";
+            
+    
+            widget.body.innerHTML=tableHTML ;
+            
+            
+			
+            var theInput = widget.body.querySelector('.myInputType');
+            
+			
+            DataDragAndDrop.droppable( theInput , {  
+                drop : function(data) {	
+                    
+					
+					 var obj = JSON.parse(data);
+					
+					var result = "\nObjectType = "+obj["data"]["items"][0]["objectType"]+" \nObjectName = "+obj["data"]["items"][0]["displayName"]+" \nObjectId = "+obj["data"]["items"][0]["objectId"];
+                    //theStatus.value = result ;
+                    
+                    var draggedObj = obj["data"]["items"][0]["objectId"];
+                   
+				   //alert("draggedObj >>>>>"+result);
+				   
+				   theInput.innerHTML = "Dropped Object Details as ::\n"+result ;
+                    
+					myWidget.callData(draggedObj);
+					
+                },
+               
+            }) ;	
+        }
+    };
+			
+    widget.addEvent('onLoad',  myWidget.onLoad);
+    widget.addEvent("onRefresh", myWidget.onLoad);
+});
+
+</script>
+
+</head>
+<body>
+  <!-- Default Loading -->
+  <div class="spinner spinner-lg spinning fade in" style="transform: translate3d(0px, 0px, 0px); display: inline-block; margin-top: 20%; margin-left: 45%;">
+    <span class="spinner-bar"></span>
+    <span class="spinner-bar spinner-bar1"></span>
+    <span class="spinner-bar spinner-bar2"></span>
+    <span class="spinner-bar spinner-bar3"></span>
+  </div>
+</body>
+</html>

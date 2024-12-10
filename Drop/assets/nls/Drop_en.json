@@ -1,0 +1,9 @@
+{
+    "main-view": "View",
+    "list_label" : "List",
+	"thumbnail_label" : "Thumbnail",
+	"routeTemplateFilter" : "Status",
+	"Active_RouteTemplates" : "Active",
+	"Inactive_RouteTemplates" : "Inactive",
+	"All_RouteTemplates" : "All"
+}

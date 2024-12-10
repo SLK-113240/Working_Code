@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- Copyright 2014 , Dassault Systemes. All rights reserved. -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+<head>
+
+<!-- Widget Meta Data -->
+<meta name="author" content="Dassault Systemes" />
+<meta name="brand" content="ENOVIA" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="autoRefresh" content="0" />
+<meta name="debugMode" content="true" />
+<meta name="description" content="Widget Sample" />
+
+<!-- Application Standalone emulation files -->
+<link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+<script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+<link rel="stylesheet" type="text/css" href="../UIKIT/UIKIT.css" /> 
+<script type="text/javascript" src="../UIKIT/UIKIT.js"></script> 
+<script type="text/javascript" src="../UIKIT/Input/Button.js"></script> 
+
+
+<!-- Other Scripts -->
+<script type="text/javascript" src="../../common/scripts/jquery-1.9.1.js"></script>
+
+<script>
+require(["DS/UIKIT/Input/Button",
+		"DS/UIKIT/SuperModal",
+		"DS/UIKIT/Form",
+		"DS/UIKIT/Input/Date",
+		"UWA/Drivers/jQuery",
+		"DS/WAFData/WAFData",
+		"DS/i3DXCompassServices/i3DXCompassServices"], 
+function (Button,SuperModal,Form,Date,$,WAFData,i3DXCompassServices) {
+	
+	var myWidget = {
+		  			
+			getcsrftoken: function () {			
+				//var url = "https://3dxr23x-otb1.emrsn.org:447/3dspace/resources/v1/application/CSRF";
+				var url = "/resources/v1/application/CSRF";
+				i3DXCompassServices.getServiceUrl({
+					serviceName: '3DSpace',
+					platformId : widget.getValue("x3dPlatformId"),
+	   			
+					onComplete: function (data) {
+						alert("data>>"+data);
+						var the3DSpaceUrlService ;
+						if ( typeof data === "string" ) {
+							the3DSpaceUrlService = data;
+				
+							var urlWAF = the3DSpaceUrlService+url;
+					
+							//var urlWAF = "https://3dxr23x-otb1.emrsn.org:447/3dspace/resources/v1/application/CSRF";
+					
+							alert("urlWAF>>>>>>>>>>>>>>>>>>>"+urlWAF);
+					
+							var methodWAF="GET";
+							var dataWAF={};
+							WAFData.authenticatedRequest(urlWAF, {
+								method: methodWAF, 
+								data: dataWAF,
+								type: 'json',
+								headers: {},
+								onComplete: function (dataResp){
+									alert("Success");
+									console.log(dataResp);
+									var CSRF_TOKEN = dataResp.csrf.value;
+									alert("CSRF_TOKEN11111>>>>>>>>>>>>>>"+CSRF_TOKEN);
+										
+									// Another webservice for creating the physical product
+									var url = "/resources/v1/modeler/dslc/changeaction/56BAA71B000049845DDD9C93000378D4?$fields=members, proposedChanges, realizedChanges, referentials, contexts, flowDown, customerAttributes";
+									
+									i3DXCompassServices.getServiceUrl({
+										serviceName: '3DSpace',
+										platformId : widget.getValue("x3dPlatformId"),
+	   			
+										onComplete: function (data) {
+											alert("data>>"+data);
+											var the3DSpaceUrlService ;
+											if ( typeof data === "string" ) {
+												the3DSpaceUrlService = data;
+												var urlWAF = the3DSpaceUrlService+url;
+												alert("urlWAF>>>>>>>>>>>>>>>>>>>"+urlWAF);
+												var methodWAF="GET";
+												var dataWAF={
+												
+												
+												};
+												WAFData.authenticatedRequest(urlWAF, {
+													method: methodWAF, 
+													data: dataWAF,
+													type: 'json',
+													headers: {
+														
+														Accept: "application/json",														
+														"Content-Type": "application/json",
+														SecurityContext: encodeURIComponent("VPLMProjectLeader.Micro Motion.GLOBAL")			
+																										
+																																						
+														
+													},
+													onComplete: function (dataResp){
+														alert("Success dataResp DONE ");
+														console.log(JSON.stringify(dataResp));
+														alert("dataResp for CA >>>>>>>>>>>>>>"+dataResp);
+													},
+												
+													onFailure: function(error){
+														alert("Fail"+JSON.stringify(error));
+														widget.body.innerHTML += "<p>Call Faillure</p>";
+														widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+													}
+											
+												});
+						
+											}
+										},
+										onFailure: function(error){
+											widget.body.innerHTML += "<p>Call Faillure</p>";
+											widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+										}
+									});	
+											
+								},
+								onFailure: function(error){
+									widget.body.innerHTML += "<p>Call Faillure</p>";
+									widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+								}
+							});
+						}
+					},
+					onFailure: function(error){
+						widget.body.innerHTML += "<p>Call Faillure</p>";
+						widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+					}
+				});
+			},
+			
+	   		callData: function(v){	
+	   			alert("Inside callData v.getValue>>"+v.getValue("Type"));
+	   			var typeValue = v.getValue("Type");
+				var titleValue = v.getValue("Title");
+				var policyValue = v.getValue("Policy");
+				var descriptionValue = v.getValue("Description");
+				var visibilityValue = v.getValue("Visibility");
+				var estStartDateValue = v.getValue("Estimated Start Date");
+				var estFinishDateValue = v.getValue("Estimated Finish Date");
+				var opportunityTypeValue = v.getValue("Opportunity Type");
+				var impactValue = v.getValue("Impact");
+				var probabilityValue = v.getValue("Probability");
+				var OPNValue = v.getValue("OPN");
+				var statusValue = v.getValue("Status");
+				alert("typeValue>>"+typeValue);
+				alert("titleValue>>"+titleValue);
+				alert("policyValue>>"+policyValue);
+				alert("descriptionValue>>"+descriptionValue);
+				alert("visibilityValue>>"+visibilityValue);
+				alert("estStartDateValue>>"+estStartDateValue);
+				alert("estFinishDateValue>>"+estFinishDateValue);
+				alert("opportunityTypeValue>>"+opportunityTypeValue);
+				alert("OPNValue>>"+OPNValue);
+				alert("statusValue>>"+statusValue); 
+				
+				var dataInput =  "BD2F24A6000017A065940A850003EC5D";
+	   			
+		  		i3DXCompassServices.getServiceUrl({
+					serviceName: '3DSpace',
+					platformId : widget.getValue("x3dPlatformId"),
+					onComplete: function (data) {
+						alert("data>>"+data);
+						var the3DSpaceUrlService ;
+						if ( typeof data === "string" ) {
+							the3DSpaceUrlService = data;
+						
+							var urlWAF = the3DSpaceUrlService+'/resources/WidgetServiceModeler/GetData?typeValue='+typeValue+'titleValue'+titleValue+'policyValue'+policyValue+'descriptionValue'+descriptionValue+'visibilityValue'+visibilityValue+'estStartDateValue'+estStartDateValue+'estFinishDateValue'+estFinishDateValue+'opportunityTypeValue'+'OPNValue'+OPNValue+'statusValue'+statusValue;
+							var dataWAF={
+								"typeValue": typeValue,
+								"titleValue": titleValue,
+								"policyValue": policyValue,
+								"descriptionValue": descriptionValue,
+								"visibilityValue": visibilityValue,
+								"estStartDateValue": estStartDateValue,
+								"estFinishDateValue": estFinishDateValue,
+								"opportunityTypeValue": opportunityTypeValue,
+								"OPNValue": OPNValue,
+								"statusValue": statusValue,
+							};
+							var methodWAF="GET";
+		   				
+							WAFData.authenticatedRequest(urlWAF, {
+								method: methodWAF, 
+								data: dataWAF,
+								type: 'json',
+								onComplete: function (dataResp) {
+									if(dataResp.msg==="OK"){
+										console.log(dataResp);
+										myWidget.arrDisplayData=dataResp.data;
+										myWidget.displayData(dataResp.data);
+									}else{
+										widget.body.innerHTML += "<p>Error in WebService Response</p>";
+										widget.body.innerHTML += "<p>"+JSON.stringify(dataResp)+"</p>";
+									}
+								},
+								onFailure: function(error){
+									widget.body.innerHTML += "<p>Call Faillure</p>";
+									widget.body.innerHTML += "<p>"+JSON.stringify(error)+"</p>";
+								}
+							});
+						}
+					}
+				}); 
+	   		},
+			
+			
+			onLoad: function() {
+		    			var dialogButton = new Button({value:'Create Physical Product',className: "primary"}).inject(document.querySelector("#createPhysicalProductContainerId"));
+		    			var superModal = new SuperModal({renderTo:document.querySelector("#createPhysicalProductContainerId")});
+		    			var v = new Form({
+			             	className: 'vertical',
+			             	fields: [
+			             		{
+			             			type: 'text',
+			             			label: 'Type',
+			             			name: "Type",
+			             			required: true,
+			             			placeholder: 'Physical Product'
+			             		},
+			             		{
+			             			type: 'text',
+			             			label: 'Title',
+			             			name: "Title",
+			             			required: true
+			             		},
+    			                {
+    			                    type: "select",
+    			                    name: "Policy",
+    			                    label: "Policy",
+    			                    nativeSelect: false,
+    			                    required: true,
+    			                    placeholder: false,
+    			                    options: [
+    			                        { value: "Project Risk", label: "Project Risk", selected: true }
+    			                    ],
+    			               },
+    			               {
+   			                    type: "textarea",
+			                    name: "Description",
+			                    label: "Description",
+			                    required: true,
+			                    placeholder: 'Enter Description...',
+			                        events: {
+			                            onChange: function () {
+			                                var L = this.getValue().trim();
+			                                if (L !== "") {
+			                                   alert("You Entered Description as >>>"+L);
+			                                }
+			                            },
+			                        },
+			                	},
+    			                {
+    			                    type: "select",
+    			                    name: "Visibility",
+    			                    label: "Visibility",
+    			                    nativeSelect: false,
+    			                    required: true,
+    			                    placeholder: false,
+    			                    options: [
+    			                        { value: "Public", label: "Public", selected: true },
+    			                        { value: "Restricted", label: "Restricted" }
+    			                    ],
+    			               },
+	   		             		{
+	   		             			type: 'date',
+	   		             			name: "Estimated Start Date",
+	   		             			label: 'Estimated Start Date'
+	   		             			
+	   		             		},
+	   		             		{
+	   		             			type: 'date',
+	   		             			name: "Estimated Finish Date",
+	   		             			label: 'Estimated Finish Date'
+	   		             			
+	   		             		},
+   			               		 {
+   			                    type: "select",
+   			                    name: "Opportunity Type",
+   			                    label: "Opportunity Type",
+   			                    nativeSelect: false,
+   			                    required: true,
+   			                    placeholder: false,
+   			                    options: [
+   			                        { value: "Quality", label: "Quality", selected: true },
+   			                        { value: "Technical", label: "Technical" },
+   			                     	{ value: "Resource", label: "Resource" },
+   			                  		{ value: "Performance", label: "Performance" },
+   			                  		{ value: "Schedule", label: "Schedule" },
+   			                		{ value: "Benefits", label: "Benefits" },
+   			              			{ value: "Manufacturability", label: "Manufacturability" },
+   			              			{ value: "Other", label: "Other" }
+   			                    ],
+   			               },
+  			                {
+  			                    type: "select",
+  			                    name: "Impact",
+  			                    label: "Impact",
+  			                    nativeSelect: false,
+  			                    required: true,
+  			                    placeholder: false,
+  			                    options: [
+  			                        { value: "1-Negligible", label: "1-Negligible", selected: true },
+  			                        { value: "2-Minor", label: "2-Minor" },
+  			                     	{ value: "3-Moderate", label: "3-Moderate" },
+  			                  		{ value: "4-Major", label: "4-Major" },
+  			                  		{ value: "5-High", label: "5-High" }
+  			                    ],
+  			               },
+ 			                {
+ 			                    type: "select",
+ 			                    name: "Probability",
+ 			                    label: "Probability",
+ 			                    nativeSelect: false,
+ 			                    required: true,
+ 			                    placeholder: false,
+ 			                    options: [
+ 			                        { value: "1-Rare", label: "1-Rare", selected: true },
+ 			                        { value: "2-Unlikely", label: "2-Unlikely" },
+ 			                     	{ value: "3-Possible", label: "3-Possiblee" },
+ 			                  		{ value: "4-Likely", label: "4-Likely" },
+ 			                  		{ value: "5-Almost Certain", label: "5-Almost Certain" }
+ 			                    ],
+ 			               },
+ 			              	{
+		             			type: 'text',
+		             			label: 'OPN',
+		             			name: 'OPN',
+		             			required: true,
+		             			placeholder: '1'
+		             		},
+ 			              	{
+		             			type: 'textarea',
+		             			name: 'Status',
+		             			label: 'Status'
+		             		}
+			             	],
+			             	buttons: [
+			             		{type:'submit', value:'Create',
+			             			events: {
+			             				onClick : function () {
+			             					alert("You Submitted the request.....................");			             					
+			             					 myWidget.getcsrftoken();
+											 //myWidget.createPhysicalProduct();
+											 
+											 
+			             					
+			             				}
+			             			}},
+			             		{type:'submit', value:'Cancel'}
+			             	]
+			             }); 
+		    			dialogButton.addEvent('onClick',function(){
+		    				superModal.dialog({
+		    					body: v,
+		    					title:'Create Physical Product',
+		    					
+		    	 	 			
+		    		});
+		    });
+		    		}
+		    }
+		widget.addEvent('onLoad',  myWidget.onLoad);	
+    		
+});
+
+</script>
+</head>
+<body>
+  <div id="createPhysicalProductContainerId"></div>
+</body>
+</html>
