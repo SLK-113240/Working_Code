@@ -28,7 +28,7 @@
 
   
 //Advanced
-require(["DS/DataDragAndDrop/DataDragAndDrop","DS/WAFData/WAFData","DS/i3DXCompassServices/i3DXCompassServices"] , 
+require(["DS/DataDragAndDrop/DataDragAndDrop","UWA/Drivers/jQuery","DS/WAFData/WAFData","DS/i3DXCompassServices/i3DXCompassServices"] , 
 function (DataDragAndDrop,$,WAFData,i3DXCompassServices) {
     'use strict';
 
